@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
     const newUser = new User({
       handle,
       password: registeredUser.password,
-      groupRating: 0,
+      groupRating: data.result[0].rating,
       createdAt: registeredUser.createdAt,
       type: "PARTICIPANT",
       sessionID: crypto.randomBytes(8).toString('hex'),
