@@ -141,7 +141,7 @@ export const NavBar2 = () => {
             </NavbarItem>
             
           ))}
-          {(user && (user.type === "MANAGER" || user.type === "ADMIN")) ? (
+
             <NavbarItem key="/post">
               <NextLink
                 className={clsx(
@@ -154,9 +154,6 @@ export const NavBar2 = () => {
                 Post
               </NextLink>
             </NavbarItem>
-          ) : (
-            ""
-          )}
           <Link
             isExternal
             aria-label="Discord"
@@ -242,7 +239,7 @@ export const NavBar2 = () => {
             </NavbarItem>
             
           ))}
-          {(user && (user.type === "MANAGER" || user.type === "ADMIN")) ? (
+
             <NavbarItem key="/post">
               <Button
                 className={`text-xl my-2 py-6 w-full`}
@@ -253,9 +250,7 @@ export const NavBar2 = () => {
                 Post
               </Button>
             </NavbarItem>
-          ) : (
-            ""
-          )}
+
         </ul>
         </NavbarItem>
         <NavbarItem className="flex justify-around my-8 gap-2">
