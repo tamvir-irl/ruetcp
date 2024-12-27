@@ -60,7 +60,14 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
 
   if (previewData.videoId) {
     return (
-      <div className="w-full flex items-center" onClick={handleClick} style={{ cursor: "pointer" }}>
+      <div
+        className="w-full flex items-center"
+        role="button"
+        tabIndex={0}
+        onClick={handleClick}
+        onKeyDown={(e) => e.key === "Enter" && handleClick()}
+        style={{ cursor: "pointer" }}
+      >
         <Image
           src={previewData.videoThumbnail as string}
           alt="Video Thumbnail"
@@ -77,7 +84,14 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
   }
 
   return (
-    <div className="w-full flex items-center" onClick={handleClick} style={{ cursor: "pointer" }}>
+    <div
+      className="w-full flex items-center"
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(e) => e.key === "Enter" && handleClick()}
+      style={{ cursor: "pointer" }}
+    >
       {previewData.image && (
         <Image
           src={previewData.image}
