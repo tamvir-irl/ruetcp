@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardBody, Button } from '@nextui-org/react';
 import { siteConfig } from '@/config/site';
+import { Link } from '@nextui-org/link';
 interface User {
     username: string;
     groupRating: number;
@@ -53,7 +54,7 @@ const RatingPage = () => {
         users.map((user, index) => (
           <Card key={index} className="mb-4 shadow-lg rounded-lg">
             <CardBody className='flex flex-row justify-between'>
-            <span ><span className={`text-black p-2 px-8 mr-4 ${index == 0 ? "bg-yellow-200" : index == 1 ? "bg-gray-300" : index == 2 ? "bg-yellow-600" : "bg-blue-300"} rounded-xl -translate-x-4`}>{index + 1}</span> {user.username}</span> <span>{user.groupRating}</span>
+            <span ><span className={`text-black p-2 px-8 mr-4 ${index == 0 ? "bg-yellow-200" : index == 1 ? "bg-gray-300" : index == 2 ? "bg-yellow-600" : "bg-blue-300"} rounded-xl -translate-x-4`}>{index + 1}</span> <Link color='foreground' href={`/profile/${user.username}`}>{user.username}</Link></span> <span>{user.groupRating}</span>
             </CardBody>
           </Card>
         ))
