@@ -12,25 +12,25 @@ router.post('/', async (req, res) => {
   try {
     // Find the user with the given handle in the User collection
     const user = await User.findOne({ handle });
+    const registration = await Registration.findOne({ handle });
+
+    if (!registration) {
+      return res.status(400).send({ message: 'Your account is not registered. Please register first.' });
+    }
+    if (!registration.verified) {
+      return res.status(400).send({ message: 'Your account is not verified. Please verify first.' });
+    }
 
     // Check if the user exists
     if (!user) {
       return res.status(400).send({ message: 'Invalid handle' });
     }
-    const salt = await bcrypt.genSalt(10);
-    const epassword = await bcrypt.hash(password, salt);
+    
+    // Compare the plain-text password with the hashed password
+    const isPasswordCorrect = await bcrypt.compare(password, registration.password);
 
-
-    if (epassword === user.password) {
-      return res.status(400).send({ message: 'Invalid pwd' });
-    }
-
-    // Find the corresponding registration record to check verification
-    const registration = await Registration.findOne({ handle });
-
-    // Check if the registration record exists and is verified
-    if (!registration || !registration.verified) {
-      return res.status(400).send({ message: 'Your account is not verified. Please verify first.' });
+    if (!isPasswordCorrect) {
+      return res.status(400).send({ message: 'Invalid password' });
     }
 
     // Retrieve the existing sessionId from the User document
