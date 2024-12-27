@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Pagination } from "@nextui-org/react";
+import { Pagination, Card, CardBody, Spinner } from "@nextui-org/react";
 import Blog from "./blog";
 import { siteConfig } from "@/config/site";
 
@@ -20,6 +20,7 @@ interface BlogData {
 const Blogs = () => {
   const [blogs, setBlogs] = useState<BlogData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoadig] = useState(true);
   const blogsPerPage = 5;
 
   useEffect(() => {
@@ -34,6 +35,9 @@ const Blogs = () => {
       } catch (error) {
         console.error("Error fetching blogs:", error);
       }
+      finally{
+        setLoadig(false)
+      }
     };
 
     fetchBlogs();
@@ -45,6 +49,15 @@ const Blogs = () => {
     (currentPage - 1) * blogsPerPage,
     currentPage * blogsPerPage
   );
+  if(loading){
+    return(
+      <Card className='bg-none shadow-none h-full flex flex-col justify-center items-center'>
+        <CardBody className="h-full flex flex-col justify-center items-center">
+          <Spinner size="lg"></Spinner>
+        </CardBody>
+      </Card>
+    )
+  }
 
   return (
     <div className="blogs-container">

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Card, CardHeader, CardBody, CardFooter, Image, Button, Divider} from '@nextui-org/react';
+import { Card, CardHeader, CardBody, CardFooter, Image, Button, Divider, Spinner} from '@nextui-org/react';
 import Blog from '@/components/blog';
 import { siteConfig } from '@/config/site';
 
@@ -58,9 +58,11 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-        <h1 >Loading...</h1>
-      </div>
+      <Card className='bg-none shadow-none h-full flex flex-col justify-center items-center'>
+        <CardBody className="h-full flex flex-col justify-center items-center">
+          <Spinner size="lg"></Spinner>
+        </CardBody>
+      </Card>
     );
   }
 

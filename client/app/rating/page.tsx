@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardHeader, CardBody, Button } from '@nextui-org/react';
+import { Card, CardHeader, CardBody, Button, Spinner } from '@nextui-org/react';
 import { siteConfig } from '@/config/site';
 import { Link } from '@nextui-org/link';
 interface User {
@@ -36,9 +36,11 @@ const RatingPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center mt-12">
-        <h1 >Loading...</h1>
-      </div>
+      <Card className='bg-none shadow-none h-full flex flex-col justify-center items-center'>
+        <CardBody className="h-full flex flex-col justify-center items-center">
+          <Spinner size="lg"></Spinner>
+        </CardBody>
+      </Card>
     );
   }
 

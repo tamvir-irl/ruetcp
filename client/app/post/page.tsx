@@ -18,7 +18,8 @@ import {
   DropdownMenu,
   DropdownItem,
   ButtonGroup,
-  Selection
+  Selection,
+  Spinner
 } from "@nextui-org/react";
 import { Bold, Italic, Underline, Link2, AtSign } from 'lucide-react';
 import { siteConfig } from '@/config/site';
@@ -39,6 +40,7 @@ const PostPage = () => {
   const [users, setUsers] = useState<Users[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -124,6 +126,9 @@ const PostPage = () => {
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
+      finally{
+        setLoading(false);
+      }
     };
 
     fetchUser();
@@ -153,6 +158,15 @@ const PostPage = () => {
     window.location.href = "/";
     setIsModalOpen(false);
   };
+  if(loading){
+    return(
+      <Card className='bg-none shadow-none h-full flex flex-col justify-center items-center'>
+        <CardBody className="h-full flex flex-col justify-center items-center">
+          <Spinner size="lg"></Spinner>
+        </CardBody>
+      </Card>
+    )
+  }
 
   return (
     (user ) ? (

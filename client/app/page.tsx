@@ -1,6 +1,6 @@
 "use client"
 import Blogs from "@/components/blogs";
-import {Card, CardHeader, CardBody, CardFooter} from "@nextui-org/card";
+import {Card, CardHeader, CardBody, CardFooter, Spinner} from "@nextui-org/react";
 import { Image, Divider } from "@nextui-org/react";
 import { Link } from "@nextui-org/link";
 import { useEffect, useState } from "react";
@@ -34,7 +34,7 @@ interface CfUser {
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [cfUser, setcfUser] = useState<CfUser | null>(null);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchUser = async () => {
       const sessionID = localStorage.getItem("sessionID");
@@ -66,11 +66,21 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
+      finally{
+        setLoading(false);
+      }
       
     };
 
     fetchUser();
   }, []);
+  if(loading){
+    <Card className='bg-none shadow-none h-full flex flex-col justify-center items-center'>
+        <CardBody className="h-full flex flex-col justify-center items-center">
+          <Spinner size="lg"></Spinner>
+        </CardBody>
+      </Card>
+  }
   return (
     <section className="flex w-full">
       {/* Blogs Section */}
