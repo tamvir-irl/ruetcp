@@ -48,13 +48,11 @@ export default function Home() {
         const response = await fetch(`${siteConfig.links.api}/user?sessionID=${sessionID}`);
         if (response.ok) {
           const userData = await response.json();
-          console.log("Fetched userData:", userData);
           setUser(userData);
           try {
             const cfres = await fetch(`https://codeforces.com/api/user.info?handles=${userData.handle}`);
             if (cfres.ok) {
               const cfData = await cfres.json();
-              console.log("Fetched userData:", cfData.result[0]);
               setcfUser(cfData.result[0]);
             } else {
               console.error("Failed to fetch user data.");

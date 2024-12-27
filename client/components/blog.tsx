@@ -62,7 +62,6 @@ const Blog = ({ blog }: BlogProps) => {
         const response = await fetch(`${siteConfig.links.api}/comments/count/${blog._id}`)
         if (response.ok) {
           const data = await response.json();
-          console.log(data)
           setCommentCount(data.total);
         } else {
           console.error("Failed to fetch comment count.");

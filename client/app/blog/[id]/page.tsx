@@ -8,7 +8,7 @@ import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import { Button, Card, CardHeader, CardBody, CardFooter, Link as NextUILink } from "@nextui-org/react";
 import CommentSection from "@/components/comments";
 import { siteConfig } from "@/config/site";
-
+//console.log
 interface User {
   handle: string;
   avatarUrl: string;
@@ -43,7 +43,6 @@ const Blog = () => {
 
     const fetchBlog = async () => {
       try {
-        console.log(`${siteConfig.links.api}/blogs/${id}`)
         const response = await fetch(`${siteConfig.links.api}/blogs/${id}`);
         if (!response.ok) throw new Error("Failed to fetch blog");
 
@@ -52,7 +51,7 @@ const Blog = () => {
         setUpvotes(data.blog.initialUpvotes);
         setDownvotes(data.blog.initialDownvotes);
       } catch (error) {
-        console.log("Error fetching blog:", error);
+        console.error("Error fetching blog:", error);
       }
     };
 
@@ -88,7 +87,6 @@ const Blog = () => {
   }, [user, blog]);
 
   const handleVote = async (id: string, type: "upvote" | "downvote") => {
-    console.log(id, type)
     if (!user?.handle) return;
   
     try {
@@ -98,7 +96,6 @@ const Blog = () => {
         body: JSON.stringify({ userId: user.handle }),
       });
   
-      console.log("Response Status:", res.status);
   
       if (res.ok) {
         const updatedBlog = await res.json();

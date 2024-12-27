@@ -45,7 +45,6 @@ export const Navbar = () => {
         const response = await fetch(`${siteConfig.links.api}/user?sessionID=${sessionID}`);
         if (response.ok) {
           const userData = await response.json();
-          console.log("Fetched userData:", userData);
           setUser(userData); // This updates the user state
         } else {
           console.error("Failed to fetch user data.");

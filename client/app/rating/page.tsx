@@ -14,7 +14,6 @@ const RatingPage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        console.log(`${siteConfig.links.api}/users`)
         const response = await fetch(`${siteConfig.links.api}/users`);
         if (!response.ok) {
           throw new Error('Failed to fetch users');

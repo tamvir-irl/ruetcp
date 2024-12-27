@@ -22,7 +22,7 @@ import {
 } from "@nextui-org/react";
 import { Bold, Italic, Underline, Link2, AtSign } from 'lucide-react';
 import { siteConfig } from '@/config/site';
-
+//console.log
 interface Users{
     username: string;
 }
@@ -117,7 +117,6 @@ const PostPage = () => {
         const response = await fetch(`${siteConfig.links.api}/user?sessionID=${sessionID}`);
         if (response.ok) {
           const userData = await response.json();
-          console.log("Fetched userData:", userData);
           setUser(userData); // This updates the user state
         } else {
           console.error("Failed to fetch user data.");
@@ -145,7 +144,7 @@ const PostPage = () => {
       })
         .then(response => response.json()) // Parse the JSON response
         .then(data => {
-          console.log('Blog created:', data);
+          console.log('Blog created');
         })
         .catch(error => {
           console.error('Error:', error);

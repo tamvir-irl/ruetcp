@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Link } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { siteConfig } from '@/config/site';
-
+//console.log
 // Define the Contest interface
 interface Contest {
   _id: string;
@@ -73,7 +73,6 @@ const ContestComponent: React.FC = () => {
         const response = await fetch(`${siteConfig.links.api}/user?sessionID=${sessionID}`);
         if (response.ok) {
           const userData = await response.json();
-          console.log("Fetched userData:", userData);
           setUser(userData); // This updates the user state
         } else {
           console.error("Failed to fetch user data.");

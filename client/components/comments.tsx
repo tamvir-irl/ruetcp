@@ -16,7 +16,7 @@ import ShortcutIcon from "@mui/icons-material/Shortcut";
 import Replt from "@mui/icons-material/Reply";
 import { Link } from "@nextui-org/link";
 import { siteConfig } from "@/config/site";
-
+//console.log
 interface Comment {
   _id: string;
   author: string;
@@ -90,7 +90,6 @@ const CommentSection = ({ _id }: { _id?: string }) => {
 
       const data = await response.json();
       const avatarUrl = data.result[0]?.titlePhoto;
-      console.log(avatarUrl)
       
       setAvatars(prev => ({
         ...prev,

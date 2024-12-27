@@ -53,7 +53,6 @@ export const NavBar2 = () => {
         const response = await fetch(`${siteConfig.links.api}/user?sessionID=${sessionID}`);
         if (response.ok) {
           const userData = await response.json();
-          console.log("Fetched userData:", userData);
           setUser(userData); // This updates the user state
         } else {
           console.error("Failed to fetch user data.");
@@ -102,8 +101,7 @@ export const NavBar2 = () => {
           const response = await fetch(`${siteConfig.links.api}/searchUser?q=${searchQuery}`);
           if (response.ok) {
             const data = await response.json();
-            setSuggestions(data.map((user: { username: string }) => user.username));
-            console.log(suggestions) // Set the top 5 suggestions
+            setSuggestions(data.map((user: { username: string }) => user.username)); // Set the top 5 suggestions
           } else {
             console.error("Failed to fetch search suggestions.");
           }
