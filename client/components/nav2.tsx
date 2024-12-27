@@ -142,7 +142,8 @@ export const NavBar2 = () => {
             
           ))}
 
-            <NavbarItem key="/post">
+            {user && (
+              <NavbarItem key="/post">
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
@@ -154,6 +155,7 @@ export const NavBar2 = () => {
                 Post
               </NextLink>
             </NavbarItem>
+            )}
           <Link
             isExternal
             aria-label="Discord"
@@ -240,16 +242,18 @@ export const NavBar2 = () => {
             
           ))}
 
-            <NavbarItem key="/post">
+          {user && (
+              <NavbarItem key="/post">
               <Button
                 className={`text-xl my-2 py-6 w-full`}
                 variant="flat"
                 color="secondary"
-                onPress={()=> {window.location.href = "/post"}} // close navmenu on click
+                onPress={()=> {window.location.href = "/post"}}
               >
                 Post
               </Button>
             </NavbarItem>
+            )}
 
         </ul>
         </NavbarItem>
