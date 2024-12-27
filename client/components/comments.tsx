@@ -1,22 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
-  Input,
   Textarea,
   Card,
   CardBody,
-  Avatar,
+  Image,
   CardHeader,
   CardFooter,
-  Image,
 } from "@nextui-org/react";
 import ShortcutIcon from "@mui/icons-material/Shortcut";
 import Replt from "@mui/icons-material/Reply";
 import { Link } from "@nextui-org/link";
 import { siteConfig } from "@/config/site";
-//console.log
+
 interface Comment {
   _id: string;
   author: string;
@@ -41,16 +39,14 @@ const CommentSection = ({ _id }: { _id?: string }) => {
     avatarUrl: string;
   } | null>(null);
   const [avatars, setAvatars] = useState<Record<string, string>>({});
+  const commentRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  // Fetch comments and user data
   useEffect(() => {
     if (!_id) return;
 
     const fetchComments = async () => {
       try {
-        const response = await fetch(
-          `${siteConfig.links.api}/comments/${_id}`
-        );
+        const response = await fetch(`${siteConfig.links.api}/comments/${_id}`);
         if (!response.ok) throw new Error("Failed to fetch comments");
 
         const data = await response.json();
@@ -85,28 +81,29 @@ const CommentSection = ({ _id }: { _id?: string }) => {
     if (!handle || avatars[handle]) return;
 
     try {
-      const response = await fetch(`https://codeforces.com/api/user.info?handles=${handle}`);
+      const response = await fetch(
+        `https://codeforces.com/api/user.info?handles=${handle}`
+      );
       if (!response.ok) throw new Error("Failed to fetch user");
 
       const data = await response.json();
       const avatarUrl = data.result[0]?.titlePhoto;
-      
-      setAvatars(prev => ({
+
+      setAvatars((prev) => ({
         ...prev,
-        [handle]: avatarUrl || "/default-avatar.png"
+        [handle]: avatarUrl || "/default-avatar.png",
       }));
     } catch (error) {
       console.error("Error fetching user:", error);
-      setAvatars(prev => ({
+      setAvatars((prev) => ({
         ...prev,
-        [handle]: "/default-avatar.png"
+        [handle]: "/default-avatar.png",
       }));
     }
   };
 
-  // Fetch avatars for all comments
   useEffect(() => {
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       if (comment.author && !avatars[comment.author]) {
         fetchAuthorPfp(comment.author);
       }
@@ -129,7 +126,7 @@ const CommentSection = ({ _id }: { _id?: string }) => {
 
       if (response.ok) {
         const updatedComment = await response.json();
-        setComments(prev => [updatedComment.comment, ...prev]);
+        setComments((prev) => [updatedComment.comment, ...prev]);
         setNewComment("");
       }
     } catch (error) {
@@ -157,7 +154,7 @@ const CommentSection = ({ _id }: { _id?: string }) => {
 
       if (response.ok) {
         const updatedComment = await response.json();
-        setComments(prev => [updatedComment.comment, ...prev]);
+        setComments((prev) => [updatedComment.comment, ...prev]);
         setReplyContent("");
         setReplyingTo(null);
       }
@@ -166,41 +163,60 @@ const CommentSection = ({ _id }: { _id?: string }) => {
     }
   };
 
+  const scrollToComment = (commentId: string) => {
+    const commentDiv = commentRefs.current.get(commentId);
+    if (commentDiv) {
+      commentDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   return (
     <div>
-      
       <Card>
-        {user && 
-        (<CardBody>
-        <Textarea
-          className="w-full mb-4"
-          placeholder="Write a comment..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handlePostComment();
-            }
-          }}
-        />
-        <Button
-          className="w-6"
-          color="primary"
-          variant="flat"
-          onClick={handlePostComment}
-        >
-          Post
-        </Button>
-      </CardBody>)
-      }
-      
+        {user && (
+          <CardBody>
+            <Textarea
+              className="w-full mb-4"
+              placeholder="Write a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handlePostComment();
+                }
+              }}
+            />
+            <Button
+              className="w-6"
+              color="primary"
+              variant="flat"
+              onClick={handlePostComment}
+            >
+              Post
+            </Button>
+          </CardBody>
+        )}
       </Card>
       <h1 className="text-3xl my-4">Comments ({comments.length})</h1>
       {comments.map((comment) => (
-        <Card key={comment._id} className="my-2 p-4">
+        <Card
+        key={comment._id}
+        className="my-2 p-4"
+        ref={(ref) => {
+          if (ref) {
+            commentRefs.current.set(comment._id, ref);
+          } else {
+            commentRefs.current.delete(comment._id); // Clean up when the component unmounts
+          }
+        }}
+      >
+      
           <CardHeader className="flex flex-col items-start">
             {comment.parentComment && (
-              <div className="bg-[#3e3e3e35] flex w-full p-4 mb-2 rounded-xl ">
+              <div
+                className="bg-[#3e3e3e35] flex w-full p-4 mb-2 rounded-xl cursor-pointer"
+                onClick={() => scrollToComment(comment.parentComment!._id)}
+              >
                 <ShortcutIcon />
                 <p>{comment.parentComment.content}</p>
               </div>
@@ -225,50 +241,48 @@ const CommentSection = ({ _id }: { _id?: string }) => {
             <span className="h-[1px] bg-gray-300 w-full mt-1">&nbsp;</span>
           </CardHeader>
           <CardBody>{comment.content}</CardBody>
-          {
-            user && (
-                <CardFooter className="flex flex-col items-end">
-            <Button
-              className="mb-2"
-              color={"primary"}
-              variant="flat"
-              size="sm"
-              onClick={() => {
-                setReplyingTo(replyingTo === null ? comment._id : null);
-              }}
-            >
-              {replyingTo === comment._id ? (
-                <span className="text-2xl">&times;</span>
-              ) : (
-                <Replt fontSize="small" />
+          {user && (
+            <CardFooter className="flex flex-col items-end">
+              <Button
+                className="mb-2"
+                color={"primary"}
+                variant="flat"
+                size="sm"
+                onClick={() => {
+                  setReplyingTo(replyingTo === null ? comment._id : null);
+                }}
+              >
+                {replyingTo === comment._id ? (
+                  <span className="text-2xl">&times;</span>
+                ) : (
+                  <Replt fontSize="small" />
+                )}
+              </Button>
+              {replyingTo === comment._id && (
+                <div className="flex flex-col w-full">
+                  <Textarea
+                    className="w-full mb-4"
+                    placeholder="Write a comment..."
+                    value={replyContent}
+                    onChange={(e) => setReplyContent(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handlePostReply();
+                      }
+                    }}
+                  />
+                  <Button
+                    className="w-6"
+                    color="primary"
+                    variant="flat"
+                    onClick={() => handlePostReply()}
+                  >
+                    Reply
+                  </Button>
+                </div>
               )}
-            </Button>
-            {replyingTo === comment._id && (
-              <div className="flex flex-col w-full">
-                <Textarea
-                  className="w-full mb-4"
-                  placeholder="Write a comment..."
-                  value={replyContent}
-                  onChange={(e) => setReplyContent(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handlePostReply();
-                    }
-                  }}
-                />
-                <Button
-                  className="w-6"
-                  color="primary"
-                  variant="flat"
-                  onClick={() => handlePostReply()}
-                >
-                  Reply
-                </Button>
-              </div>
-            )}
-          </CardFooter>
-            )
-          }
+            </CardFooter>
+          )}
         </Card>
       ))}
     </div>

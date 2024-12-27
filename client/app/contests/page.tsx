@@ -170,7 +170,7 @@ const ContestComponent: React.FC = () => {
   return (
     <div className="space-y-4">
       {error && <div className="text-red-500">{error}</div>}
-      {contests.length === 0 && <div className="text-gray-500">No contests found.</div>}
+      {contests.length === 0 && <div>No contests found.</div>}
       {(user && (user.type === "MANAGER" || user.type === "ADMIN")) &&
         <Link href="/contests/add">Add a contest</Link>
       }
@@ -192,22 +192,22 @@ const ContestComponent: React.FC = () => {
             <CardBody>
               <div className="flex justify-between items-center">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm">
                     <strong>Start Time:</strong> {formattedStart.date} <sup>{formattedStart.time}</sup>
                   </p>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm">
                     <strong>End Time:</strong> {formattedEnd.date} <sup>{formattedEnd.time}</sup>
                   </p>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm">
                     <strong>Duration:</strong> {formattedDuration}
                   </p>
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm">
                     <strong>Phase:</strong> {phase}  <strong>({countdown})</strong>
                   </p>
                 </div>
