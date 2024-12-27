@@ -114,7 +114,7 @@ const PostPage = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:8080/user?sessionID=${sessionID}`);
+        const response = await fetch(`${siteConfig.links.api}/user?sessionID=${sessionID}`);
         if (response.ok) {
           const userData = await response.json();
           console.log("Fetched userData:", userData);
@@ -136,7 +136,7 @@ const PostPage = () => {
         author: user?.handle  
     }
     // 
-    fetch('http://localhost:8080/api/blogs/post', {
+    fetch(`${siteConfig.links.api}/blogs/post`, {
         method: 'POST', // Specify the HTTP method
         headers: {
           'Content-Type': 'application/json' // Tell the server we are sending JSON data
@@ -218,7 +218,6 @@ const PostPage = () => {
                 aria-label="User mentions"
                 className="w-56"
                 selectionMode="single"
-                onSelectionChange={handleSelectionChange}
                 items={filteredUsers}
               >
                 <DropdownItem
@@ -234,11 +233,13 @@ const PostPage = () => {
                     onClick={(e: React.MouseEvent) => e.stopPropagation()} //this onPress is showing error
                   />
                 </DropdownItem>
+                <DropdownItem key={"usernames"}>
+                  <ul className='flex flex-col w-full'>
                 {filteredUsers.map((user) => (
-                  <DropdownItem key={user.username}>
-                    @{user.username}
-                  </DropdownItem>
+                  <span className="p-4 hover:bg-[#ffffff56] w-full rounded-lg" key={user.username} onClick={()=>handleUserMention(user.username)}>@{user.username}</span>
                 ))}
+                </ul>
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </ButtonGroup>
