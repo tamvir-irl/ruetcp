@@ -234,11 +234,11 @@ const PostPage = () => {
                   />
                 </DropdownItem>
                 <DropdownItem key={"usernames"}>
-                  <ul className='flex flex-col w-full'>
+                  <div className='flex flex-col w-full'>
                 {filteredUsers.map((user) => (
-                  <li className="p-4 hover:bg-[#ffffff56] w-full rounded-lg" key={user.username} onClick={()=>handleUserMention(user.username)}>@{user.username}</li>
+                  <span className="p-4 hover:bg-[#ffffff56] w-full rounded-lg" key={user.username} onClick={()=>handleUserMention(user.username)}>@{user.username}</span>
                 ))}
-                </ul>
+                </div>
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
