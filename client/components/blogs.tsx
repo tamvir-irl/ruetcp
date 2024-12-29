@@ -15,6 +15,8 @@ interface BlogData {
   initialDownvotes: number;
   upvotedBy: string[];
   downvotedBy: string[];
+  edited: boolean;
+  editedAt: string;
 }
 
 const Blogs = () => {
