@@ -27,6 +27,8 @@ interface User {
     initialDownvotes: number;
     upvotedBy: string[];
     downvotedBy: string[];
+    edited: boolean;
+    editedAt: string;
   }
 const Profile = () => {
   const { id } = useParams();
