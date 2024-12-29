@@ -6,6 +6,8 @@ import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import { Button, Card, CardHeader, CardBody, CardFooter, Link as NextUILink } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import ChatIcon from "@mui/icons-material/Chat";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { siteConfig } from "@/config/site";
 
 interface User {
@@ -26,6 +28,8 @@ interface BlogProps {
     initialDownvotes: number;
     upvotedBy: string[];
     downvotedBy: string[];
+    edited: boolean;
+    editedAt: string;
   };
 }
 
@@ -59,7 +63,7 @@ const Blog = ({ blog }: BlogProps) => {
     };
     const fetchCommentCount = async () => {
       try {
-        const response = await fetch(`${siteConfig.links.api}/comments/count/${blog._id}`)
+        const response = await fetch(`${siteConfig.links.api}/comments/count/${blog._id}`);
         if (response.ok) {
           const data = await response.json();
           setCommentCount(data.total);
@@ -83,7 +87,6 @@ const Blog = ({ blog }: BlogProps) => {
 
   const handleVote = async (id: string, type: "upvote" | "downvote") => {
     if (!user?.handle) {
-      // Show the modal if user is not logged in
       setShowModal(true);
       return;
     }
@@ -109,6 +112,29 @@ const Blog = ({ blog }: BlogProps) => {
     }
   };
 
+  const handleEdit = () => {
+    router.push(`/blog/edit/${blog._id}`);
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this blog?")) return;
+
+    try {
+      const res = await fetch(`${siteConfig.links.api}/blogs/delete/${blog._id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        alert("Blog deleted successfully.");
+        window.location.reload(); // Redirect to homepage after deletion
+      } else {
+        console.error("Failed to delete blog.");
+      }
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+    }
+  };
+
   const formatContent = (content: string) => {
     let tempContent = content;
 
@@ -124,7 +150,7 @@ const Blog = ({ blog }: BlogProps) => {
 
   const handleClickOutside = (e: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-      setShowModal(false); // Close modal when clicked outside
+      setShowModal(false);
     }
   };
 
@@ -135,7 +161,6 @@ const Blog = ({ blog }: BlogProps) => {
       document.removeEventListener("mousedown", handleClickOutside);
     }
 
-    // Clean up the event listener when the component unmounts
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -145,14 +170,14 @@ const Blog = ({ blog }: BlogProps) => {
     <Card className="p-4 mb-4">
       <CardHeader className="flex flex-col items-start">
         <NextUILink href={`/blog/${blog._id}`} className="text-xl font-semibold">
-          {blog.title}
+          {blog.title}&nbsp;{blog.edited && <span className="text-xs text-gray-500">(edited)</span>}
         </NextUILink>
         <p className="text-sm text-gray-500">
           By{" "}
           <NextUILink href={`/profile/${blog.author}`} className="text-violet-400">
             {blog.author}
           </NextUILink>{" "}
-          on {new Date(blog.createdAt).toLocaleDateString()}
+          on {blog.edited ? new Date(blog.createdAt).toLocaleDateString() : new Date(blog.editedAt).toLocaleDateString()}
         </p>
       </CardHeader>
       <CardBody>
@@ -161,35 +186,61 @@ const Blog = ({ blog }: BlogProps) => {
           dangerouslySetInnerHTML={{ __html: formatContent(blog.content) }}
         />
       </CardBody>
-      <CardFooter className="flex justify-between gap-2">
+      <CardFooter className="flex justify-between gap-2">    
+        <div className="flex items-center gap-2">
         <NextUILink href={`/blog/${blog._id}`}>
-          <Button size="sm" color="secondary" variant="flat"><ChatIcon />&nbsp;{commentCount}</Button>
+          <Button size="sm" color="secondary" variant="flat">
+            <ChatIcon />&nbsp;{commentCount}
+          </Button>
         </NextUILink>
+        {user?.handle === blog.author && (
+            <>
+              <Button
+                size="sm"
+                color="primary"
+                onPress={handleEdit}
+                isIconOnly
+                variant="flat"
+                endContent={<EditIcon />}
+              >
+              </Button>
+              <Button
+                size="sm"
+                color="danger"
+                isIconOnly
+                variant="flat"
+                onPress={handleDelete}
+                endContent={<DeleteIcon />}
+              >
+              </Button>
+            </>
+          )}
+        </div>
         <div className="flex gap-2">
-        <Button
-        size="sm"
-          variant={upvoted ? "solid" : "flat"}
-          color={"success"}
-          onPress={() => handleVote(blog._id, "upvote")}
-          endContent={<ThumbUpAltIcon />}
-          disabled={!user} // Disable if user is not logged in
-        >
-          {upvotes}
-        </Button>
-        <Button
-        size="sm"
-          variant={downvoted ? "solid" : "flat"}
-          color={"danger"}
-          onPress={() => handleVote(blog._id, "downvote")}
-          endContent={<ThumbDownAltIcon />}
-          disabled={!user} // Disable if user is not logged in
-        >
-          {downvotes}
-        </Button>
+          <Button
+            size="sm"
+            variant={upvoted ? "solid" : "flat"}
+            color={"success"}
+            onPress={() => handleVote(blog._id, "upvote")}
+            endContent={<ThumbUpAltIcon />}
+            disabled={!user}
+          >
+            {upvotes}
+          </Button>
+          <Button
+            size="sm"
+            variant={downvoted ? "solid" : "flat"}
+            color={"danger"}
+            onPress={() => handleVote(blog._id, "downvote")}
+            endContent={<ThumbDownAltIcon />}
+            disabled={!user}
+          >
+            {downvotes}
+          </Button>
+          
         </div>
       </CardFooter>
 
-      {/* Modal for when the user is not logged in */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
           <div ref={modalRef} className="bg-white p-6 rounded-lg w-96">
@@ -198,8 +249,8 @@ const Blog = ({ blog }: BlogProps) => {
             <Button
               color="primary"
               onPress={() => {
-                router.push("/auth/login"); // Navigate to login page
-                setShowModal(false); // Close the modal
+                router.push("/auth/login");
+                setShowModal(false);
               }}
             >
               Go to Login

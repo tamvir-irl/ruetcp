@@ -21,6 +21,7 @@ import commentsRouter from './api/comment/index.js';
 import cron from "node-cron";
 import cors from 'cors';
 import User from './Schemas/user.js';
+import Blog from './Schemas/blog.js';
 import fetch from 'node-fetch';  // Make sure to install node-fetch if not already installed
 
 const app = express();
@@ -35,8 +36,17 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => {
+  .then(async () => {
     console.log('Connected to MongoDB');
+    try {
+      const result = await Blog.updateMany(
+        { edited: { $exists: false } },
+        { $set: { edited: false, editedAt: null } }
+      );
+      console.log(`Migration completed: ${result.modifiedCount} documents updated.`);
+    } catch (error) {
+      console.error('Error during migration:', error);
+    }
     
     // Cron job to update contest phase every minute
     cron.schedule('* * * * *', async () => {
@@ -66,7 +76,7 @@ mongoose
     });
 
     // Cron job to update users' groupRating from Codeforces every 5 hours
-    cron.schedule('0 */5 * * *', async () => {
+    cron.schedule('0 */1 * * *', async () => {
       try {
         const users = await User.find(); // Fetch all users from MongoDB
 

@@ -36,6 +36,14 @@ const blogSchema = new mongoose.Schema(
       type: [String],
       required: false,
     },
+    edited: {
+      type: Boolean,
+      default: false,
+    },
+    editedAt: {
+      type: Date,
+      required: false,
+    },
   },
   {
     timestamps: true,
