@@ -217,6 +217,7 @@ const CommentSection = ({ _id }: { _id?: string }) => {
                 className="bg-[#3e3e3e35] flex w-full p-4 mb-2 rounded-xl cursor-pointer" 
                 onClick={() => scrollToComment(comment.parentComment!._id)}
                 tabIndex={99}
+                role="button"
               >
                 <ShortcutIcon />
                 <p>{comment.parentComment.content}</p>
