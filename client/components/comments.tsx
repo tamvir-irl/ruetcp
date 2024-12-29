@@ -214,8 +214,9 @@ const CommentSection = ({ _id }: { _id?: string }) => {
           <CardHeader className="flex flex-col items-start">
             {comment.parentComment && (
               <div
-                className="bg-[#3e3e3e35] flex w-full p-4 mb-2 rounded-xl cursor-pointer"
+                className="bg-[#3e3e3e35] flex w-full p-4 mb-2 rounded-xl cursor-pointer" 
                 onClick={() => scrollToComment(comment.parentComment!._id)}
+                role="commentScroller"
               >
                 <ShortcutIcon />
                 <p>{comment.parentComment.content}</p>
