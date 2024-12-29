@@ -25,6 +25,6 @@ export const siteConfig = {
   links: {
     discord: "https://discord.gg/8q5UvbDNHX",
     codeforces: "https://codeforces.com/group/vbb0gSG3se",
-    api: "http://localhost:8080/api"
+    api: "https://ruetcp.onrender.com/api"
   },
 };
